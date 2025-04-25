@@ -1,0 +1,6 @@
+/server-env/
+node_modules/
+/node_modules/
+/server/server-env/
+*.json
+*/__pycache__/

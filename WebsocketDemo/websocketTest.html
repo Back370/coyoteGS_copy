@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #log {
+            width: 80%;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #f9f9f9;
+        }
+        input, button {
+            margin: 5px;
+        }
+    </style>
+   <!-- Socket.IO クライアントライブラリをインクルード--> 
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <input type="text" id="serverUrl" placeholder="ws://localhost:5000" value="ws://localhost:5000">
+    <button onclick="connectWebSocket()">Connect</button>
+    <button onclick="disconnectWebSocket()">Disconnect</button>
+    
+    <h2>Send Message</h2>
+    <input type="text" id="messageInput" placeholder="Enter message">
+    <button onclick="sendMessage()">Send</button>
+    
+    <h2>Logs</h2>
+    <div id="log"></div>
+    
+    <script>
+        let socket;
+
+        function connectWebSocket() {
+            const url = document.getElementById('serverUrl').value;
+            socket = io(url);  // Socket.IOを使用して接続
+
+            socket.on('connect', () => logMessage('Connected to WebSocket server'));
+            socket.on('message', (data) => logMessage(`Received: ${data}`));
+            socket.on('error', (error) => logMessage(`Error: ${error.message}`));
+            socket.on('disconnect', () => logMessage('Connection closed'));
+        }
+
+        function disconnectWebSocket() {
+            if (socket) {
+                socket.disconnect();
+                logMessage('Disconnected from WebSocket server');
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            if (socket && socket.connected) {
+                socket.send(message);
+                logMessage(`Sent: ${message}`);
+            } else {
+                logMessage('WebSocket is not connected');
+            }
+        }
+
+        function logMessage(message) {
+            const logDiv = document.getElementById('log');
+            const logEntry = document.createElement('p');
+            logEntry.textContent = message;
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>

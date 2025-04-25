@@ -1,0 +1,5 @@
+python-socketio
+eventlet
+requests
+tqdm
+git+https://github.com/coyote-AI-competition/coyote-game
